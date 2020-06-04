@@ -222,5 +222,5 @@ class ReadJSMachineShifts(plugin.InputPreparationPlugin, TimeSupportMixin):
               node_data["interruptions"] = {}
             node_data["interruptions"]["shift"] = {"shiftPattern": defaultShiftPattern.pop(node),
                                                    "endUnfinished": 0}
-	
+        
     return data

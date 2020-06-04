@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -29,8 +30,9 @@ models a Broker that organizes the dispatch of operators/repairmen
 # from SimPy.Simulation import Resource, now
 import simpy
 import xlwt
-from ObjectResource import ObjectResource
-from Operator import Operator
+from .ObjectResource import ObjectResource
+from .Operator import Operator
+from six.moves import range
 
 # ===========================================================================
 #               the resource that handles multiple operators

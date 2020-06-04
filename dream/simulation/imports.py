@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -85,8 +86,8 @@ from dream.simulation.PeriodicMaintenance import PeriodicMaintenance
 #Auxiliary
 from dream.simulation.Globals import G
 from dream.simulation.RandomNumberGenerator import RandomNumberGenerator
-import ExcelHandler
-import Globals
+from dream.simulation import ExcelHandler
+from dream.simulation import Globals
 
 # CapacityStation
 from dream.simulation.applications.CapacityStations.CapacityEntity import CapacityEntity

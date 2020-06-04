@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -29,13 +30,14 @@ BatchReassembly is a Core Object that takes a number of subBatches and reassembl
 # from SimPy.Simulation import activate, waituntil, now, hold, waitevent
 import simpy
 
-from Globals import G
-from RandomNumberGenerator import RandomNumberGenerator
-from CoreObject import CoreObject
+from .Globals import G
+from .RandomNumberGenerator import RandomNumberGenerator
+from .CoreObject import CoreObject
 # from Entity import Entity
 
-from SubBatch import SubBatch
-from Batch import Batch
+from .SubBatch import SubBatch
+from .Batch import Batch
+from six.moves import range
 
 # ===========================================================================
 # the Batch-Reassembly Object
@@ -51,7 +53,7 @@ class BatchReassembly(CoreObject):
         self.type="BatchRassembly"              #String that shows the type of object
         if not processingTime:
             processingTime = {'Fixed':{'mean': 0 }}
-        if 'Normal' in processingTime.keys() and\
+        if 'Normal' in list(processingTime.keys()) and\
                 processingTime['Normal'].get('max', None) is None:
             processingTime['Normal']['max'] = float(processingTime['Normal']['mean']) + 5 * float(processingTime['Normal']['stdev'])
           
@@ -61,7 +63,7 @@ class BatchReassembly(CoreObject):
         self.operator=operator         
         # Sets the attributes of the processing (and failure) time(s)
         self.rng=RandomNumberGenerator(self, processingTime)
-        from Globals import G
+        from .Globals import G
         G.BatchReassemblyList.append(self)
         # flag to show if the objects outputs results
         self.outputResults=bool(int(outputResults))
@@ -348,7 +350,7 @@ class BatchReassembly(CoreObject):
     # =======================================================================
     def outputResultsJSON(self):
         if self.outputResults:
-            from Globals import G
+            from .Globals import G
             json = {'_class': 'Dream.%s' % self.__class__.__name__,
                     'id': self.id,
                     'family': self.family,

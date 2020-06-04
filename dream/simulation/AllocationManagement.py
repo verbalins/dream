@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 '''
 Created on 3 Oct 2013
 
@@ -8,14 +9,14 @@ Basic implementation: runs the allocation routine for the future demand first
 
 Equivalent to M2 in MATLAB functions
 '''
-
 import xlwt
 import xlrd
-from AllocationRoutine import AllocationRoutine
-from CoreObject import CoreObject
-from Globals import G
-from ObjectInterruption import ObjectInterruption
-from FutureDemandCreator import FutureDemandCreator
+from .AllocationRoutine import AllocationRoutine
+from .CoreObject import CoreObject
+from .Globals import G
+from .ObjectInterruption import ObjectInterruption
+from .FutureDemandCreator import FutureDemandCreator
+from six.moves import range
 
 class AllocationManagement(ObjectInterruption): 
     def __init__(self, id=id, name=None, argumentDict={}):
@@ -29,7 +30,7 @@ class AllocationManagement(ObjectInterruption):
         ObjectInterruption.initialize(self)
         self.readData()
         self.FDC=FutureDemandCreator()
-        from Globals import G
+        from .Globals import G
         G.AllocationManagementList.append(self)
         
     def run(self):

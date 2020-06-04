@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -26,9 +27,8 @@ Created on 6 Feb 2013
 models a part entity that flows through the system
 '''
 
-
-from Globals import G
-from Entity import Entity
+from .Globals import G
+from .Entity import Entity
 
 #The part object
 class Part(Entity):

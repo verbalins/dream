@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from dream.simulation.imports import Machine, Exit, Queue, Globals, Part, ExcelHandler
 from dream.simulation.imports import G 
 from dream.simulation.Globals import runSimulation

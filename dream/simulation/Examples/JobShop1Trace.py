@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from dream.simulation.imports import MachineJobShop, QueueJobShop, ExitJobShop, Job, ExcelHandler
 from dream.simulation.Globals import runSimulation
 
@@ -33,7 +35,7 @@ def main():
     schedule=[]
     for record in J.schedule:
         schedule.append([record["station"].objName,record["entranceTime"]])
-        print J.name, "got into", record["station"].objName, "at", record["entranceTime"] 
+        print(J.name, "got into", record["station"].objName, "at", record["entranceTime"]) 
     ExcelHandler.outputTrace('TRACE')
     return schedule
 

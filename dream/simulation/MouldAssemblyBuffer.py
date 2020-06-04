@@ -26,7 +26,8 @@ Inherits from ConditionalBuffer. It is the buffer before the MouldAssembly.
 Only if all the mould (order) components are present, will it be able to dispose them
 '''
 
-from ConditionalBuffer import ConditionalBuffer
+from __future__ import absolute_import
+from .ConditionalBuffer import ConditionalBuffer
 import simpy
 
 # ===========================================================================
@@ -64,7 +65,7 @@ class MouldAssemblyBuffer(ConditionalBuffer):
             are present in other MouldAssemblyBuffers
         '''
         # execute default behaviour
-        from Globals import G
+        from .Globals import G
         activeObject = self.getActiveObject()
         activeObjectQueue = activeObject.getActiveObjectQueue()
         activeEntity=ConditionalBuffer.getEntity(self)

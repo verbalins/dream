@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -29,10 +30,10 @@ checks if he is available before it takes it
 # from SimPy.Simulation import Process, Resource, activate, now
 import simpy
 
-from OperatedPoolBroker import Broker
-from OperatorPool import OperatorPool
-from OperatorRouterManaged import RouterManaged
-from MachineJobShop import MachineJobShop
+from .OperatedPoolBroker import Broker
+from .OperatorPool import OperatorPool
+from .OperatorRouterManaged import RouterManaged
+from .MachineJobShop import MachineJobShop
 
 # ===========================================================================
 # the MachineManagedJob object
@@ -56,7 +57,7 @@ class MachineManagedJob(MachineJobShop):
         id = self.id+'_OP'
         name=self.objName+'_operatorPool'
         self.operatorPool=OperatorPool(id, name, operatorsList=[])
-        from Globals import G
+        from .Globals import G
         G.OperatorPoolsList.append(self.operatorPool)
     
    
@@ -65,7 +66,7 @@ class MachineManagedJob(MachineJobShop):
     #===========================================================================
     def createRouter(self):
         #create a Router
-        from Globals import G
+        from .Globals import G
         if not G.RouterList:
             self.router=RouterManaged()
             G.RouterList[0]=self.router          

@@ -25,12 +25,14 @@ Created on 27 Apr 2013
 module that creates the future demand and appends it to buffers
 '''
 
+from __future__ import absolute_import
 import xlrd
 import json
-import urllib
+import six.moves.urllib.request, six.moves.urllib.parse, six.moves.urllib.error
 
-from Globals import G
-from JobMA import JobMA
+from .Globals import G
+from .JobMA import JobMA
+from six.moves import range
 
 class FutureDemandCreator(): 
         

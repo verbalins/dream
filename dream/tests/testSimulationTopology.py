@@ -17,6 +17,7 @@
 # along with DREAM.  If not, see <http://www.gnu.org/licenses/>.
 # ===========================================================================
 
+from __future__ import absolute_import
 from dream.simulation import LineGenerationJSON
 import json
 import os

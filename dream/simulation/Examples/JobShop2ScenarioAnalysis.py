@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from dream.simulation.imports import MachineJobShop, QueueJobShop, ExitJobShop, Job, ExcelHandler
 from dream.simulation.Globals import runSimulation
 
@@ -39,7 +41,7 @@ def main(test=0):
         if test:
             return totalDelay    
         # print the total delay
-        print "running with", schedulingRule, "total delay is",totalDelay 
+        print("running with", schedulingRule, "total delay is",totalDelay) 
 
 if __name__ == '__main__':
     main()

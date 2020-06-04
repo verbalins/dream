@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -26,9 +27,8 @@ Models a queue where entities can wait in order to be routed to the same server 
 if the level is reached Router object is signalled
 '''
 
-
 import simpy
-from Queue import Queue
+from .Queue import Queue
 # ===========================================================================
 #                            the Queue object
 # ===========================================================================

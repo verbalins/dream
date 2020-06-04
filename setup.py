@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='dream',
-    version='0.0.1',
+    name='dream-future',
+    version='0.1.0',
     license='LGPL',
     url='https://manpy-simulation.org/',
     packages=find_packages('.'),
@@ -28,5 +28,5 @@ setup(
     """),
     include_package_data=True,
     zip_safe=False,
-    test_suite='dream.tests'
+    test_suite='dream.tests.testSimulationExamples'
 )

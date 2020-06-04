@@ -4,6 +4,9 @@ Created on 2 Jul 2014
 @author: Anna
 '''
 
+from __future__ import absolute_import
+from __future__ import print_function
+from six.moves import range
 def opAss_LP(machineList, PBlist, PBskills, previousAssignment={}, weightFactors = [2, 1, 0, 2, 1, 1], Tool={}):
     
     from pulp import LpProblem, LpMaximize, LpVariable, LpBinary, lpSum, LpStatus
@@ -12,10 +15,10 @@ def opAss_LP(machineList, PBlist, PBskills, previousAssignment={}, weightFactors
     import glob
     import os 
     import time
-    from Globals import G
+    from .Globals import G
 
     startPulp=time.time()
-    machines = machineList.keys()
+    machines = list(machineList.keys())
     sumWIP = float(sum([machineList[mach]['WIP'] for mach in machines ]))
         
     # define LP problem    
@@ -37,7 +40,7 @@ def opAss_LP(machineList, PBlist, PBskills, previousAssignment={}, weightFactors
             if machineList[mach]['stationID'] not in stationGroup:
                 stationGroup[machineList[mach]['stationID']] = []
             stationGroup[machineList[mach]['stationID']].append(mach)
-        Delta_Station = LpVariable.dicts("D_station", [(st1, st2) for i1, st1 in enumerate(stationGroup.keys()) for st2 in stationGroup.keys()[i1 + 1:]])
+        Delta_Station = LpVariable.dicts("D_station", [(st1, st2) for i1, st1 in enumerate(stationGroup.keys()) for st2 in list(stationGroup.keys())[i1 + 1:]])
     
         # calculate global max number of machines within a station that will be used as dividers for Delta_Station  
         maxNoMachines = 0
@@ -53,7 +56,7 @@ def opAss_LP(machineList, PBlist, PBskills, previousAssignment={}, weightFactors
                     if st1 in PBskills[oper1]:
                         tempList.append(PB_ass[(oper1,mach1)]/float(maxNoMachines))
         
-            for st2 in stationGroup.keys()[i+1:]:
+            for st2 in list(stationGroup.keys())[i+1:]:
             
                 finalList = copy.copy(tempList)
                 for mach2 in stationGroup[st2]:                
@@ -69,7 +72,7 @@ def opAss_LP(machineList, PBlist, PBskills, previousAssignment={}, weightFactors
         for i in range(len(stationGroup)):
             normalisingFactorDeltaStation += i
         for i1, st1 in enumerate(stationGroup.keys()):
-            for st2 in stationGroup.keys()[i1+1:]:
+            for st2 in list(stationGroup.keys())[i1+1:]:
                 obj.append(Delta_Station[(st1,st2)]*weightFactors[1]/float(normalisingFactorDeltaStation) )
         
     # min variation in PB assignment
@@ -171,7 +174,7 @@ def opAss_LP(machineList, PBlist, PBskills, previousAssignment={}, weightFactors
     prob.solve()
     
     if LpStatus[prob.status] != 'Optimal':
-        print 'WARNING: LP solution ', LpStatus[prob.status]
+        print('WARNING: LP solution ', LpStatus[prob.status])
     
     PBallocation = {}
     

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -26,13 +28,15 @@ carries some global variables
 '''
 
 #from SimPy.Simulation import *
-from Machine import Machine
-from Queue import Queue
-from Repairman import Repairman
+
+import dream.simulation.Machine
+from .Queue import Queue
+from .Repairman import Repairman
 import xlwt
 import xlrd
 from random import Random, expovariate, gammavariate, normalvariate
 import simpy
+from six.moves import range
 
 # ===========================================================================
 # globals
@@ -141,7 +145,7 @@ def moveExcess(consumption=1,safetyStock=70, giverId=None, receiverId=None):
             giver.next=[]
             receiver.previous=[]
     else:
-        print "Giver and/or Receiver not defined"
+        print("Giver and/or Receiver not defined")
 
 # =======================================================================
 # Import a class from a dotted name used in json.
@@ -235,7 +239,7 @@ def setWIP(entityList):
                 else:
                     raise SetWipTypeError('The starting station of the the entity is not defined uniquely')
             except SetWipTypeError as setWipError:
-                print 'WIP definition error: {0}'.format(setWipError)
+                print('WIP definition error: {0}'.format(setWipError))
             # get the starting station of the entity and load it with it
             object = findObjectById(objectId)
             object.getActiveObjectQueue().append(entity)        # append the entity to its Queue
@@ -272,7 +276,7 @@ def setWIP(entityList):
             G.pendingEntities.append(entity)
             
         # if the station is buffer then sent the canDispose signal
-        from Queue import Queue
+        from .Queue import Queue
         if entity.currentStation:
             if issubclass(entity.currentStation.__class__, Queue):
                 # send the signal only if it is not already triggered
@@ -300,7 +304,7 @@ def setWIP(entityList):
 
 
 def countIntervalThroughput(**kw):
-    from Exit import Exit
+    from .Exit import Exit
     currentExited=0  
     for obj in G.ObjList:
         if isinstance(obj, Exit):
@@ -396,10 +400,15 @@ def runSimulation(objectList=[], maxSimTime=100, numberOfReplications=1, trace='
     G.ObjList=[]
     G.ObjectInterruptionList=[]
     G.ObjectResourceList=[]
-    from CoreObject import CoreObject
-    from ObjectInterruption import ObjectInterruption
-    from ObjectResource import ObjectResource
-    from Entity import Entity
+    #from .CoreObject import CoreObject
+    #from .ObjectInterruption import ObjectInterruption
+    #from .ObjectResource import ObjectResource
+    #from .Entity import Entity
+    from .CoreObject import CoreObject
+    from .ObjectInterruption import ObjectInterruption
+    from .ObjectResource import ObjectResource
+    from .Entity import Entity
+	
     for object in objectList:
         if issubclass(object.__class__, CoreObject):
             G.ObjList.append(object)
@@ -444,7 +453,7 @@ def runSimulation(objectList=[], maxSimTime=100, numberOfReplications=1, trace='
 
         # identify from the exits what is the time that the last entity has ended. 
         endList=[]
-        from Exit import Exit
+        from .Exit import Exit
         for object in G.ObjList:
             if issubclass(object.__class__,Exit):
                 endList.append(object.timeLastEntityLeft)
@@ -454,7 +463,7 @@ def runSimulation(objectList=[], maxSimTime=100, numberOfReplications=1, trace='
             G.maxSimTime=float(max(endList))
         # do not let G.maxSimTime=0 so that there will be no crash
         if G.maxSimTime==0:
-            print "simulation ran for 0 time, something may have gone wrong"
+            print("simulation ran for 0 time, something may have gone wrong")
             import sys
             sys.exit()         
                

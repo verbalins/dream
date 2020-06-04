@@ -1,5 +1,8 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from dream.simulation.imports import Machine, Source, Exit, Part, Queue, NonStarvingEntry
 from dream.simulation.Globals import runSimulation
+from six.moves import range
 
 #define the objects of the model
 NS=NonStarvingEntry('NS1','Entry',entityData={'_class':'Dream.Part'})
@@ -46,8 +49,8 @@ def main(test=0):
                             )
         E.Exits=[]
     solutionList.sort(key=lambda x: x.get("throughput",0), reverse=True)
-    print "the best allocation is for Q2",solutionList[0]['Q2'],"units and Q3",solutionList[0]['Q2'],\
-            "units, with a predicted throughput of",solutionList[0]['throughput']
+    print("the best allocation is for Q2",solutionList[0]['Q2'],"units and Q3",solutionList[0]['Q2'],\
+            "units, with a predicted throughput of",solutionList[0]['throughput'])
 
 if __name__ == '__main__':
     main()

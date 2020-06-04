@@ -17,6 +17,7 @@
 # along with DREAM.  If not, see <http://www.gnu.org/licenses/>.
 # ===========================================================================
 
+from __future__ import absolute_import
 from dream.plugins.plugin import PluginRegistry
 import json
 import os

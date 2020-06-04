@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -30,6 +32,8 @@ Also only abstract ManPy classes inherit directly (CoreObject, Entity, ObjectRes
 # ===========================================================================
 # the ManPy object
 # ===========================================================================
+
+import six
 class ManPyObject(object):
     
     def __init__(self, id, name,**kw):
@@ -52,7 +56,7 @@ class ManPyObject(object):
     @staticmethod
     def requestAllocation():
         # TODO: signal the Router, skilled operators must be assigned to operatorPools
-        from Globals import G
+        from .Globals import G
         G.RouterList[0].allocation=True
         G.RouterList[0].waitEndProcess=False
         if not G.RouterList[0].invoked and G.RouterList[0].expectedSignals['isCalled']:
@@ -66,7 +70,7 @@ class ManPyObject(object):
     #===========================================================================
     @staticmethod
     def signalRouter(receiver=None):
-        from Globals import G
+        from .Globals import G
         # if an operator is not assigned to the receiver then do not signal the receiver but the Router
         try:
             # in the case of skilled router there is no need to signal
@@ -95,7 +99,7 @@ class ManPyObject(object):
     #===========================================================================
     @staticmethod
     def checkForDedicatedOperators():
-        from Globals import G
+        from .Globals import G
         # XXX this can also be global
         # flag used to inform if the operators assigned to the station are skilled (skillsList)
         return any(operator.skillsList for operator in G.OperatorsList)
@@ -103,13 +107,13 @@ class ManPyObject(object):
     @staticmethod
     def printTrace(entity='', **kw):
         assert len(kw)==1, 'only one phrase per printTrace supported for the moment'
-        from Globals import G
-        import Globals
+        from .Globals import G
+        from . import Globals
         time=G.env.now
         charLimit=60
         remainingChar=charLimit-len(entity)-len(str(time))
         if(G.console=='Yes'):
-            print time,entity,
+            print(time,entity, end=' ')
             for key in kw:
                 if key not in Globals.getSupportedPrintKwrds():
                     raise ValueError("Unsupported phrase %s for %s" % (key, entity))
@@ -119,15 +123,15 @@ class ManPyObject(object):
                 suffix=element.get('suffix',None)
                 arg=kw[key]
                 if prefix:
-                    print prefix*remainingChar,phrase,arg
+                    print(prefix*remainingChar,phrase,arg)
                 elif suffix:
                     remainingChar-=len(phrase)+len(arg)
                     suffix*=remainingChar
                     if key=='enter':
                         suffix=suffix+'>'
-                    print phrase,arg,suffix
+                    print(phrase,arg,suffix)
                 else:
-                    print phrase,arg
+                    print(phrase,arg)
                     
     # =======================================================================
     # outputs message to the trace.xls 
@@ -135,7 +139,7 @@ class ManPyObject(object):
     # =======================================================================
     @staticmethod
     def outputTrace(entityName, message):
-        from Globals import G
+        from .Globals import G
         if(G.trace=="Yes"):         #output only if the user has selected to
             #handle the 3 columns
             G.traceSheet.write(G.traceIndex,0,str(G.env.now))
@@ -161,7 +165,7 @@ class ManPyObject(object):
         # send the signal
         signal.succeed(succeedTuple)
         # reset the expected signals of the receiver to 0
-        for key, value in receiver.expectedSignals.iteritems():
+        for key, value in six.iteritems(receiver.expectedSignals):
             receiver.expectedSignals[key]=0
           
     #===========================================================================
@@ -182,7 +186,7 @@ class ManPyObject(object):
     @staticmethod
     def endSimulation():
         # cancel all the scheduled events
-        from Globals import G
+        from .Globals import G
         from copy import copy
         G.env._queue.sort(key=lambda item: item[0])
         scheduledEvents=copy(G.env._queue)
@@ -200,7 +204,7 @@ class ManPyObject(object):
     # ======================================================================        
     @staticmethod
     def checkIfSystemEmpty():
-        from Globals import G
+        from .Globals import G
         for object in G.ObjList:
             if len(object.getActiveObjectQueue()):
                 return False

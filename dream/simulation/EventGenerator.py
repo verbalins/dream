@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -27,8 +28,10 @@ models a generator that runs a method at specified intervals
 '''
 
 # from SimPy.Simulation import now, hold, Process
+
 import simpy
-from ObjectInterruption import ObjectInterruption
+from .ObjectInterruption import ObjectInterruption
+import six
 
 class EventGenerator(ObjectInterruption):
     def __init__(self, id=id, name=None, start=0, stop=float('inf'), interval=1,
@@ -46,14 +49,14 @@ class EventGenerator(ObjectInterruption):
         self.method=method              #the method to be invoke       
         self.argumentDict=argumentDict
         # if the argumentDict is passed as string convert it to dict
-        if isinstance(self.argumentDict, basestring):
+        if isinstance(self.argumentDict, six.string_types):
             import ast
             self.argumentDict=ast.literal_eval(self.argumentDict)
-        from Globals import G
+        from .Globals import G
         G.EventGeneratorList.append(self)
         self.method=method
-        if isinstance(method, basestring):
-            import Globals
+        if isinstance(method, six.string_types):
+            from . import Globals
             self.method=Globals.getMethodFromName(method)
             
     def run(self):

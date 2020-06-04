@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -28,9 +29,11 @@ it gathers entities and transfers them with a certain speed
 
 # from SimPy.Simulation import Process, Resource, SimEvent
 # from SimPy.Simulation import waitevent, now, hold, infinity, activate
+
 import simpy
 import xlwt
-from CoreObject import CoreObject
+from .CoreObject import CoreObject
+from six.moves import range
 
 #===============================================================================
 # The conveyer object
@@ -55,7 +58,7 @@ class Conveyer(CoreObject):
                                                         # when the entities have to be loaded to operatedMachines
                                                         # then the giverObjects have to be blocked for the time
                                                         # that the machine is being loaded 
-        from Globals import G
+        from .Globals import G
         G.ConveyerList.append(self)
        
     #===========================================================================
@@ -426,7 +429,7 @@ class Conveyer(CoreObject):
     #===========================================================================
     def postProcessing(self, MaxSimtime=None):              
         if MaxSimtime==None:
-            from Globals import G
+            from .Globals import G
             MaxSimtime=G.maxSimTime
         self.moveEntities()     #move the entities to count the working time
         #if the conveyer is full count the blockage time
@@ -445,7 +448,7 @@ class Conveyer(CoreObject):
     # outputs results to JSON File
     #===========================================================================
     def outputResultsJSON(self):
-        from Globals import G
+        from .Globals import G
         json = {'_class': self.class_name,
                 'id': self.id,
                 'results': {}}
@@ -465,7 +468,7 @@ class ConveyerMover(object):
     #===========================================================================
     def __init__(self, conveyer):
 #         Process.__init__(self)
-        from Globals import G
+        from .Globals import G
         self.env=G.env
         self.conveyer=conveyer      #the conveyer that owns the mover
         self.timeToWait=0           #the time to wait every time. This is calculated by the conveyer and corresponds

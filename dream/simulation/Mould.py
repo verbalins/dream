@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -25,8 +26,8 @@ Created on 17 Jan 2014
 Mould is an Entity that assembled out of OrderComponents and has a parent Order 
 '''
 
-from Globals import G
-from Job import Job
+from .Globals import G
+from .Job import Job
 
 # ===========================================================================
 # The Mould object

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -63,7 +65,7 @@ class RandomNumberGenerator(object):
                            'Geometric','Lognormal','Weibull','Cauchy', 'Triangular']:
                 distribution.pop(key, None)
         self.distribution=distribution
-        self.distributionType = distribution.keys()[0]
+        self.distributionType = list(distribution.keys())[0]
         parameters=distribution[self.distributionType]
         # if a parameter is passed as None or empty string set it to 0
         for key in parameters:
@@ -85,7 +87,7 @@ class RandomNumberGenerator(object):
         self.obj = obj
 
     def generateNumber(self):
-        from Globals import G
+        from .Globals import G
         if(self.distributionType=="Fixed"):     #if the distribution is Fixed 
             return self.mean
         elif(self.distributionType=="Exp"):     #if the distribution is Exponential

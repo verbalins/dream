@@ -1,11 +1,13 @@
-import Globals
+from __future__ import absolute_import
+from . import Globals
 import xlwt
-from Globals import G
+from .Globals import G
 
-import OrderComponent
-import Mould
-import Order
-import OrderDesign
+from . import OrderComponent
+from . import Mould
+from . import Order
+from . import OrderDesign
+from six.moves import range
 
 JOB_SHOP_TECHNOLOGY_SEQ=['CAD','CAM','MILL','EDM','ASSM','MA','INJM','IM' ]
 ORDER_COMPONENT_TYPE_SET=set(['OrderComponent','Design','Mould'])
@@ -72,7 +74,7 @@ def outputRoute():
                 G.routeTraceSheet.write(j+1,0,float(event))
             # XXX create 3 times as many columns as the number of machines
             for j, machine in enumerate(G.MachineList):
-                machine.station_col_inds=range(j*3+1,j*3+3)
+                machine.station_col_inds=list(range(j*3+1,j*3+3))
                 machine.op_col_indx=j*3+3
                 G.routeTraceSheet.write_merge(0,0,j*3+1,j*3+3,str(machine.id))
 

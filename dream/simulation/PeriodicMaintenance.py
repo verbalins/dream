@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -27,10 +28,11 @@ A maintenance happens periodically. The change from failure is that it works in 
 i.e. if the victim is processing when it happens it would first end the processing and then start the maintenance 
 '''
 
+
 import simpy
 import math
-from RandomNumberGenerator import RandomNumberGenerator
-from ObjectInterruption import ObjectInterruption
+from .RandomNumberGenerator import RandomNumberGenerator
+from .ObjectInterruption import ObjectInterruption
 
 class PeriodicMaintenance(ObjectInterruption):
     

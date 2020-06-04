@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -29,7 +30,8 @@ models an operator that operates a machine
 # from SimPy.Simulation import Resource, now
 import simpy
 import xlwt
-from ObjectResource import ObjectResource
+from .ObjectResource import ObjectResource
+from six.moves import range
 
 # ===========================================================================
 #                 the resource that operates the machines
@@ -91,7 +93,7 @@ class Operator(ObjectResource):
                         self.coreObjectIds.append(station)
         # flag to show if the resource is available at the start of simulation
         self.available=available
-        from Globals import G
+        from .Globals import G
         G.OperatorsList.append(self) 
         # flag to show if the operator will output his schedule in the results
         self.ouputSchedule=ouputSchedule
@@ -136,7 +138,7 @@ class Operator(ObjectResource):
     # sort candidate stations
     #===========================================================================
     def sortStations(self):
-        from Globals import G
+        from .Globals import G
         router=G.RouterList[0]
         candidateMachines=self.candidateStations
         # for the candidateMachines
@@ -244,7 +246,7 @@ class Operator(ObjectResource):
             activeObjectQ.sort(key=lambda x: (x.dueDate-x.totalRemainingProcessingTime))  
         #if the schedulingRule is to sort Entities based on the length of the following Queue
         elif criterion=="WINQ":
-            from Globals import G
+            from .Globals import G
             for entity in activeObjectQ:
                 if len(entity.remainingRoute)>1:
                     nextObjIds=entity.remainingRoute[1].get('stationIdsList',[])
@@ -263,7 +265,7 @@ class Operator(ObjectResource):
     # =======================================================================
     def postProcessing(self, MaxSimtime=None):
         if MaxSimtime==None:
-            from Globals import G
+            from .Globals import G
             MaxSimtime=G.maxSimTime
             
         # if the Operator is currently working we have to count the time of this work    
@@ -299,7 +301,7 @@ class Operator(ObjectResource):
     #                    outputs results to JSON File
     # =======================================================================
     def outputResultsJSON(self):
-        from Globals import G
+        from .Globals import G
         json = {'_class': 'Dream.%s' % self.__class__.__name__,
                 'id': self.id,
                 'family': self.family,
@@ -321,7 +323,7 @@ class Operator(ObjectResource):
                 if record.get("exitTime", None) != None:
                     json['results']['schedule'][-1]["exitTime"] = record["exitTime"]
                 if record.get("entity", None):
-                    from Job import Job
+                    from dream.simulation.Job import Job
                     if issubclass(record["entity"].__class__, Job):
                         json['results']['schedule'][-1]["entityId"] = record["entity"].id
                 if record.get("task_id", None):
@@ -337,7 +339,7 @@ class Operator(ObjectResource):
                 # find the station of this step
                 station=record["station"]               # XXX should also hold a list with all the machines G.MachineList?
                 # find the column corresponding to the machine
-                from Globals import G
+                from .Globals import G
                 # XXX each machine should have at least 3 columns, 2 for the jobs and one for operators
                 if station in G.MachineList:
                     machine_index=G.MachineList.index(station)

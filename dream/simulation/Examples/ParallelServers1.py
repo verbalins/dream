@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from dream.simulation.imports import Machine, Source, Exit, Part, Queue, Failure 
 from dream.simulation.Globals import runSimulation
 
@@ -36,9 +38,9 @@ def main(test=0):
               "working_ratio_M2": working_ratio_M2}
 
     #print the results
-    print "the system produced", E.numOfExits, "parts"
-    print "the working ratio of", M1.objName,  "is", working_ratio_M1, "%"
-    print "the working ratio of", M2.objName,  "is", working_ratio_M2, "%"
+    print("the system produced", E.numOfExits, "parts")
+    print("the working ratio of", M1.objName,  "is", working_ratio_M1, "%")
+    print("the working ratio of", M2.objName,  "is", working_ratio_M2, "%")
 
 if __name__ == '__main__':
     main()

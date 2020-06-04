@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -24,11 +25,12 @@ Created on 29 Oct 2013
 '''
 models the source object that generates the Batches Entities
 '''
-from Source import Source
-from Globals import G
+
+from .Source import Source
+from .Globals import G
 # from SimPy.Simulation import Process
 import simpy
-from RandomNumberGenerator import RandomNumberGenerator
+from .RandomNumberGenerator import RandomNumberGenerator
 
 class BatchSource(Source):
     def __init__(self, id, name, interArrivalTime=None,
@@ -36,7 +38,7 @@ class BatchSource(Source):
         Source.__init__(self, id=id, name=name,
                         interArrivalTime=interArrivalTime, entity=entity)
         self.numberOfUnits = int(batchNumberOfUnits)
-        from Globals import G
+        from .Globals import G
         G.BatchSourceList.append(self)  
         
         

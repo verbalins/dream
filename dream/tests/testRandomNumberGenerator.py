@@ -17,10 +17,12 @@
 # along with DREAM.  If not, see <http://www.gnu.org/licenses/>.
 # ===========================================================================
 
+from __future__ import absolute_import
 from dream.simulation.RandomNumberGenerator import RandomNumberGenerator
 from unittest import TestCase
 
 from dream.simulation.Source import Source
+from six.moves import range
 obj = Source(id='dummy_obj', name="Dummy obj to instanciate RNG")
 
 class RandomNumberGeneratorTestCase(TestCase):

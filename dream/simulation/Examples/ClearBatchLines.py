@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from dream.simulation.imports import Machine, Source, Exit, Batch, BatchDecomposition,\
                             BatchSource, BatchReassembly, Queue, LineClearance, ExcelHandler, ExcelHandler 
 from dream.simulation.Globals import runSimulation
@@ -59,16 +61,16 @@ def main(test=0):
               }
         
     # print the results 
-    print "the system produced", E.numOfExits, "batches"
-    print "the working ratio of", M1.objName, "is", working_ratio_M1
-    print "the blockage ratio of", M1.objName, 'is', blockage_ratio_M1
-    print "the waiting ratio of", M1.objName, 'is', waiting_ratio_M1
-    print "the working ratio of", M2.objName, "is", working_ratio_M2
-    print "the blockage ratio of", M2.objName, 'is', blockage_ratio_M2
-    print "the waiting ratio of", M2.objName, 'is', waiting_ratio_M2
-    print "the working ratio of", M3.objName, "is", working_ratio_M3
-    print "the blockage ratio of", M3.objName, 'is', blockage_ratio_M3
-    print "the waiting ratio of", M3.objName, 'is', waiting_ratio_M3
+    print("the system produced", E.numOfExits, "batches")
+    print("the working ratio of", M1.objName, "is", working_ratio_M1)
+    print("the blockage ratio of", M1.objName, 'is', blockage_ratio_M1)
+    print("the waiting ratio of", M1.objName, 'is', waiting_ratio_M1)
+    print("the working ratio of", M2.objName, "is", working_ratio_M2)
+    print("the blockage ratio of", M2.objName, 'is', blockage_ratio_M2)
+    print("the waiting ratio of", M2.objName, 'is', waiting_ratio_M2)
+    print("the working ratio of", M3.objName, "is", working_ratio_M3)
+    print("the blockage ratio of", M3.objName, 'is', blockage_ratio_M3)
+    print("the waiting ratio of", M3.objName, 'is', waiting_ratio_M3)
     ExcelHandler.outputTrace('TRACE')
    
 if __name__ == '__main__':

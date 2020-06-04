@@ -1,6 +1,9 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from dream.simulation.applications.MilkPlant.imports import *
 from dream.simulation.imports import ExcelHandler, ExitJobShop
 from dream.simulation.Globals import runSimulation
+from six.moves import range
 
 
 T1=MilkTank('T1','T1',capacity=640)
@@ -37,4 +40,4 @@ for i in range(27):
 runSimulation([T1,T2,T3,Tr1,Tr2,Tr3,E]+MPList, 1000,trace='Yes')
 ExcelHandler.outputTrace('MilkPlant')
 
-print 1
+print(1)

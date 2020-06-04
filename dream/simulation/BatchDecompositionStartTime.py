@@ -26,7 +26,8 @@ Customization of the BatchDecomposition so that it sets the start time in the Ba
 Custom object. Maybe we should have a generic method that the objects can call in order to set that
 '''
 
-from BatchDecomposition import BatchDecomposition
+from __future__ import absolute_import
+from .BatchDecomposition import BatchDecomposition
 
 class BatchDecompositionStartTime(BatchDecomposition):
     

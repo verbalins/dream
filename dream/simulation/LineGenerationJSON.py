@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -29,8 +31,11 @@ main script. Reads data from JSON, generates and runs the simulation and prints 
 # ===========================================================================
 #                                    IMPORTS
 # ===========================================================================
+
 from warnings import warn
 import logging
+import six
+from six.moves import range
 logger = logging.getLogger("dream.platform")
 
 # By default numpy just prints on stderr when there's an error. We do not want
@@ -38,10 +43,10 @@ logger = logging.getLogger("dream.platform")
 import numpy
 numpy.seterr(all='raise')
 import simpy
-from dream.simulation.Globals import G 
-from dream.simulation.Order import Order
-from dream.simulation.OrderDesign import OrderDesign
-from dream.simulation.Mould import Mould
+from .Globals import G 
+from .Order import Order
+from .OrderDesign import OrderDesign
+from .Mould import Mould
 import dream.simulation.PrintRoute as PrintRoute
 import dream.simulation.ExcelHandler as ExcelHandler
 import time
@@ -49,7 +54,7 @@ import json
 from random import Random
 import sys
 import os.path
-import dream.simulation.Globals as Globals
+import .Globals as Globals
 import ast
 import cProfile
 
@@ -145,7 +150,7 @@ def createObjectResourcesAndCoreObjects():
     read the data and create them
     '''
 
-    for (element_id, element) in nodes.iteritems():                 # use an iterator to go through all the nodes
+    for (element_id, element) in six.iteritems(nodes):                 # use an iterator to go through all the nodes
         element['id'] = element_id                                  # create a new entry for the element (dictionary)
         element = element.copy()
         for k in ('element_id', 'top', 'left'):
@@ -174,7 +179,7 @@ def createObjectResourcesAndCoreObjects():
     read the data and create them
     '''
     from dream.simulation.OperatorPool import OperatorPool
-    for (element_id, element) in nodes.iteritems():                 # use an iterator to go through all the nodes
+    for (element_id, element) in six.iteritems(nodes):                 # use an iterator to go through all the nodes
                                                                     # the key is the element_id and the second is the 
                                                                     # element itself 
         element = element.copy()
@@ -204,7 +209,7 @@ def createObjectResourcesAndCoreObjects():
     loop through all the elements    
     read the data and create them
     '''
-    for (element_id, element) in nodes.iteritems():
+    for (element_id, element) in six.iteritems(nodes):
         element = element.copy()
         element['id'] = element_id
         element.setdefault('name', element_id)
@@ -260,7 +265,7 @@ def createObjectInterruptions():
     #            search for Event Generator and create them
     #                   this is put last, since the EventGenerator 
     #                may take other objects as argument
-    for (element_id, element) in nodes.iteritems():                 # use an iterator to go through all the nodes
+    for (element_id, element) in six.iteritems(nodes):                 # use an iterator to go through all the nodes
                                                                     # the key is the element_id and the second is the 
                                                                     # element itself 
         element['id'] = element_id                                  # create a new entry for the element (dictionary)
@@ -289,7 +294,7 @@ def createObjectInterruptions():
     from dream.simulation.ShiftScheduler import ShiftScheduler
     from dream.simulation.ScheduledBreak import ScheduledBreak
     from dream.simulation.Break import Break
-    for (element_id, element) in nodes.iteritems():
+    for (element_id, element) in six.iteritems(nodes):
         element['id'] = element_id
         scheduledMaintenance=element.get('interruptions',{}).get('scheduledMaintenance', {})
         # if there is a scheduled maintenance initiate it and append it
@@ -441,7 +446,7 @@ def createWIP():
                 
     # read from the dictionary the dicts with key 'nodes'
     nodes = json_data["graph"]['node']
-    for (element_id, element) in nodes.iteritems():
+    for (element_id, element) in six.iteritems(nodes):
         element['id'] = element_id
         wip=element.get('wip', [])
         from dream.simulation.OrderDesign import OrderDesign
@@ -643,7 +648,7 @@ def main(argv=[], input_data=None):
       try:                                          # try to open the file with the inputs
           G.JSONFile=open(filename, "r")            # global variable holding the file to be opened
       except IOError:                               
-          print "%s could not be open" % filename
+          print("%s could not be open" % filename)
           return "ERROR"
       G.InputData=G.JSONFile.read()                 # pass the contents of the input file to the global var InputData
     else:
@@ -658,7 +663,7 @@ def main(argv=[], input_data=None):
     setTopology()
 
     #run the experiment (replications)          
-    for i in xrange(G.numberOfReplications):
+    for i in range(G.numberOfReplications):
         G.env=simpy.Environment()                       # initialize the environment
         G.maxSimTime=float(G.JSONData['general'].get('maxSimTime', '100'))     # read the maxSimTime in each replication 
                                                                                # since it may be changed for infinite ones
@@ -692,7 +697,7 @@ def main(argv=[], input_data=None):
             if float(max(endList))!=0 and (G.env.now==float('inf') or G.env.now == max(endList)):    #do not let G.maxSimTime=0 so that there will be no crash
                 G.maxSimTime=float(max(endList))
             else:
-                print "simulation ran for 0 time, something may have gone wrong"
+                print("simulation ran for 0 time, something may have gone wrong")
                 logger.info("simulation ran for 0 time, something may have gone wrong")
         #else we simulate until the given maxSimTime
         else:
@@ -741,7 +746,7 @@ def main(argv=[], input_data=None):
       G.outputJSONFile.write(outputJSONString)
     if not input_data:
       # Output on stdout
-      print outputJSONString
+      print(outputJSONString)
       # XXX I am not sure we still need this case
       return
 

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -26,8 +28,9 @@ inherits from QueueJobShop. The difference is that it reads the operator from th
 checks if he is available before it disposed it
 '''
 # from SimPy.Simulation import now
+
 import simpy
-from QueueJobShop import QueueJobShop
+from .QueueJobShop import QueueJobShop
 
 # ===========================================================================
 # Error in the setting up of the WIP
@@ -104,7 +107,7 @@ class QueueManagedJob(QueueJobShop):
                 if receiver.isLoadRequested():
                     if receiver.identifyEntityToGet().manager.isAssignedTo()!=receiver:
                         try:
-                            from Globals import G
+                            from .Globals import G
                             if not G.RouterList[0].invoked and G.RouterList[0].expectedSignals['isCalled']:
 #                                 self.printTrace(self.id, signal='router')
                                 G.RouterList[0].invoked=True
@@ -151,4 +154,4 @@ class QueueManagedJob(QueueJobShop):
             activeObjectQueue.sort(key=lambda x: x.manager==operator and x.managerAvailable, reverse=True)
         else:
             # added for testing
-            print 'there must be a caller defined for this kind of Queue sorting'
+            print('there must be a caller defined for this kind of Queue sorting')

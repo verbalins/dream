@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -27,10 +28,11 @@ models the failures that servers can have
 '''
 
 # from SimPy.Simulation import now, Process, hold, request, release
+
 import simpy
 import math
-from RandomNumberGenerator import RandomNumberGenerator
-from ObjectInterruption import ObjectInterruption
+from .RandomNumberGenerator import RandomNumberGenerator
+from .ObjectInterruption import ObjectInterruption
 
 class Failure(ObjectInterruption):
     

@@ -17,8 +17,10 @@
 # along with DREAM.  If not, see <http://www.gnu.org/licenses/>.
 # ===========================================================================
 
+from __future__ import absolute_import
 from unittest import TestCase
 import os
+import six
 project_path = os.path.split(os.path.split(os.path.split(__file__)[0])[0])[0]
 import xlrd
 import json
@@ -92,13 +94,13 @@ class KnowledgeExtractionExamples(TestCase):
         result_data = result
         result_data=result_data['graph']
         nodes=result_data.get('node',{})
-        for element_id,element in nodes.iteritems():
+        for element_id,element in six.iteritems(nodes):
             if element_id=='M1':
-                self.assertEquals(element['processingTime'].keys()[0],'Logistic')
+                self.assertEquals(list(element['processingTime'].keys())[0],'Logistic')
             if element_id=='M2':
-                self.assertEquals(element['processingTime'].keys()[0],'Logistic')
+                self.assertEquals(list(element['processingTime'].keys())[0],'Logistic')
             if element_id=='S1':
-                self.assertEquals(element['interarrivalTime'].keys()[0],'Exp')
+                self.assertEquals(list(element['interarrivalTime'].keys())[0],'Exp')
         jsonFile.close()
     
     def testConfidenceIntervals(self):

@@ -17,6 +17,8 @@
 # along with DREAM.  If not, see <http://www.gnu.org/licenses/>.
 # ===========================================================================
 
+from __future__ import absolute_import
+from __future__ import print_function
 import json
 import sys
 
@@ -77,7 +79,7 @@ def format(m):
       for job in node['wip']:
         if 'route' in job:
           for r in job['route']:
-            print r
+            print(r)
             r.pop("stepNumber", None)
             if 'processingTime' in r:
               processingTime = r['processingTime']
@@ -109,7 +111,7 @@ def migrate_to_new_format(graph):
     node_data.pop('element_id', None)
     coordinate = graph['preference']['coordinates'].get(node_id)
     node_data['coordinate'] = coordinate
-    print node_data['_class']
+    print(node_data['_class'])
     # TODO: discuss the new processing time data structure !
 
 

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -25,8 +26,8 @@ Created on 06 Jan 2013
 Order is an Entity that can have its design, get broken to sub-components
 '''
 
-from Globals import G
-from Job import Job
+from .Globals import G
+from .Job import Job
 
 # =======================================================================
 # The Order object 
@@ -76,7 +77,7 @@ class Order(Job):
     # returns only the components that are present in the system 
     #===========================================================================
     def findActiveComponents(self):
-        from Globals import findObjectById
+        from .Globals import findObjectById
         for componentDict in self.componentsList:
             componentId=componentDict.get('id',0)
             componentClass=componentDict.get('_class','not found')

@@ -1,7 +1,10 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from dream.simulation.applications.MilkPlant.imports import *
 from dream.simulation.imports import ExcelHandler, ExitJobShop
 from dream.simulation.Globals import runSimulation
 import time
+from six.moves import range
 
 start=time.time()
 # how many liters is one milk pack
@@ -59,6 +62,6 @@ for  productId in E.finishedProductDict:
     totalFat=E.finishedProductDict[productId]['totalFat']
     exitTime=E.finishedProductDict[productId]['exitTime']
     fat=totalFat/float(volume)
-    print 'from', productId, volume, 'liters were produced of', fat, '% fat. Product ready at t=',exitTime
+    print('from', productId, volume, 'liters were produced of', fat, '% fat. Product ready at t=',exitTime)
     
-print 'Execution Time=',time.time()-start
+print('Execution Time=',time.time()-start)

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -27,8 +28,9 @@ models a repairman that can fix a machine when it gets failures
 '''
 
 # from SimPy.Simulation import Resource, now
+
 import simpy
-from Operator import Operator
+from .Operator import Operator
 
 # ===========================================================================
 #                 the resource that repairs the machines
@@ -37,6 +39,6 @@ class Repairman(Operator):
     def __init__(self, id, name, capacity=1,**kw):
         Operator.__init__(self,id=id, name=name, capacity=capacity)
         self.type="Repairman"
-        from Globals import G
+        from .Globals import G
         G.RepairmanList.append(self) 
         

@@ -1,5 +1,12 @@
-from dream.simulation.imports import MachineJobShop, QueueJobShop, ExitJobShop, Job
+from __future__ import absolute_import
+from __future__ import print_function
+
 from dream.simulation.Globals import runSimulation
+#from dream.simulation.imports import MachineJobShop, QueueJobShop, ExitJobShop, Job
+from dream.simulation.QueueJobShop import QueueJobShop
+from dream.simulation.MachineJobShop import MachineJobShop
+from dream.simulation.ExitJobShop import ExitJobShop
+from dream.simulation.Job import Job
 
 #define the objects of the model
 Q1=QueueJobShop('Q1','Queue1', capacity=float("inf"))
@@ -38,7 +45,7 @@ def main(test=0):
     
     # print the results
     for record in J.schedule:
-        print J.name, "got into", record["station"].objName, "at", record["entranceTime"]
+        print(J.name, "got into", record["station"].objName, "at", record["entranceTime"])
 
 if __name__ == '__main__':
     main()              

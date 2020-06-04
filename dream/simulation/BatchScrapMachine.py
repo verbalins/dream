@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # ===========================================================================
 # Copyright 2013 University of Limerick
 #
@@ -29,9 +30,9 @@ depends on the number of units of the (Sub)Batch
 # from SimPy.Simulation import Process, Resource
 # from SimPy.Simulation import activate, passivate, waituntil, now, hold
 import simpy
-from RandomNumberGenerator import RandomNumberGenerator
+from .RandomNumberGenerator import RandomNumberGenerator
 
-from Machine import Machine
+from .Machine import Machine
 
 # ================================================================
 #                  the BatchScrapMachine object
@@ -70,7 +71,7 @@ class BatchScrapMachine(Machine):
             scrapQuantity = {'Fixed':{'mean': 0}}
             
         self.scrapRng=RandomNumberGenerator(self, scrapQuantity)
-        from Globals import G
+        from .Globals import G
         G.BatchScrapMachineList.append(self)
 
     # =======================================================================
