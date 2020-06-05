@@ -83,7 +83,7 @@ class Source(CoreObject):
     #===========================================================================
     # the __init__method of the Source class
     #===========================================================================
-    def __init__(self, id, name, interArrivalTime=None, entity='Dream.Part',**kw):
+    def __init__(self, id, name, interArrivalTime=None, entity='Dream.Part', number=0, **kw):
         # Default values
         if not interArrivalTime:
           interArrivalTime = {'Fixed': {'mean': 1}}
@@ -98,9 +98,11 @@ class Source(CoreObject):
 
         self.type="Source"                              #String that shows the type of object
         self.rng = RandomNumberGenerator(self, interArrivalTime)
-
         self.item=Globals.getClassFromName(entity)      #the type of object that the Source will generate
-               
+        
+        # New way of terminating the sunning of the simulation
+        self.numberToCreate = number
+
         self.scheduledEntities=[]       # list of creations that are scheduled. pattern is [timeOfCreation, EntityCounter]     
         from .Globals import G
         G.SourceList.append(self)  
@@ -151,6 +153,9 @@ class Source(CoreObject):
             if self.entityCreated in receivedEvent:
                 transmitter, eventTime=self.entityCreated.value
                 self.entityCreated=self.env.event()
+                # Stop generating if we reached target.
+                if self.numberToCreate > 0 and self.numberOfArrivals > self.numberToCreate:
+                    return
             # otherwise, if the receiver requests availability then try to signal him if there is anything to dispose of
             if self.canDispose in receivedEvent:
                 transmitter, eventTime=self.canDispose.value
@@ -204,7 +209,7 @@ class Source(CoreObject):
             self.getActiveObjectQueue().append(newEntity)            # append the entity to the resource 
             self.numberOfArrivals+=1                              # we have one new arrival
             G.numberOfEntities+=1
-            self.appendEntity(newEntity)  
+            self.appendEntity(newEntity)
         activeEntity=CoreObject.removeEntity(self, entity)          # run the default method  
         if len(self.getActiveObjectQueue())==1:
             if self.expectedSignals['entityCreated']:

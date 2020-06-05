@@ -36,8 +36,8 @@ from six.moves import range
 class NonStarvingEntry(Queue):
     family='Entry'
     def __init__(self, id, name, capacity=float('inf'), entityData={'_class':'Dream.Part'}, threshold=2, 
-                 initialWIPLevel=2,**kw):
-        Queue.__init__(self, id=id,name=name, capacity=capacity)
+                 initialWIPLevel=2,number=0,**kw):
+        Queue.__init__(self, id=id,name=name, capacity=capacity, number=number)
         # the threshold under which a new Entity will be created
         self.threshold=int(threshold)
         # the number of Entities in the start of simulation
