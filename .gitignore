@@ -5,7 +5,7 @@
 .installed.cfg
 bin/**
 develop-eggs/**
-dream.egg-info/**
+*.egg-info/**
 eggs/**
 parts/**
 outputJSON.json
@@ -13,3 +13,7 @@ trace*.xls
 npm-debug.log
 node_modules/
 tmp/
+.vscode/
+.venv/
+build/
+**/*.xls
