@@ -122,11 +122,11 @@ class QueueJobShop(Queue):
     def updateNext(self,entity=None):
         activeEntity=entity
         # read the possible receivers - update the next list
-        from .Globals import Globals
+        from .Globals import findObjectById
         nextObjectIds=activeEntity.remainingRoute[1].get('stationIdsList',[])
         nextObjects = []
         for nextObjectId in nextObjectIds:
-            nextObject = Globals.findObjectById(nextObjectId)
+            nextObject = findObjectById(nextObjectId)
             nextObjects.append(nextObject)
         # update the next list of the object
         for nextObject in nextObjects:
@@ -174,7 +174,7 @@ class QueueJobShop(Queue):
     def sortEntitiesForReceiver(self, receiver=None):
         # TODO: if the receiver is already assigned an operator then the giver should sort for that manager
         activeObject=self.getActiveObject()
-        from .Globals import G
+        from dream.simulation.Globals import G
         for operator in G.OperatorsList:
             if operator.isAssignedTo()==receiver:
                 activeObject.sortEntitiesForOperator(operator)

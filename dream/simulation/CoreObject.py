@@ -75,19 +75,19 @@ class CoreObject(ManPyObject):
         from .Globals import G
         G.ObjList.append(self)  # add object to ObjList
         # list of expected signals of a station (values can be used as flags to inform on which signals is the station currently yielding)
-        self.expectedSignals={
-                                "isRequested":0,
-                                "canDispose":0,
-                                "interruptionStart":0,
-                                "interruptionEnd":0,
-                                "loadOperatorAvailable":0,
-                                "initialWIP":0,
-                                "brokerIsSet":0,
-                                "preemptQueue":0,
-                                "entityRemoved":0,
-                                "entityCreated":0,
-                                "moveEnd":0,
-                                "processOperatorUnavailable":0
+        self.expectedSignals = {
+                                "isRequested": 0,
+                                "canDispose": 0,
+                                "interruptionStart": 0,
+                                "interruptionEnd": 0,
+                                "loadOperatorAvailable": 0,
+                                "initialWIP": 0,
+                                "brokerIsSet": 0,
+                                "preemptQueue": 0,
+                                "entityRemoved": 0,
+                                "entityCreated": 0,
+                                "moveEnd": 0,
+                                "processOperatorUnavailable": 0
                               }
         # flag notifying the the station can deliver entities that ended their processing while interrupted
         self.canDeliverOnInterruption=False
