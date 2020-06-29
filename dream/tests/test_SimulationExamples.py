@@ -184,6 +184,13 @@ class TestSimulations:
         result = main(test=1)
         assert 80 < result["parts"] < 1000
 
+    def test_Aggregation(self):
+        from dream.simulation.Examples.Aggregation import main
+
+        result = main(test=1)
+        assert result["frames"] == 30  # 30 created frames
+        assert result["parts"] > 0
+
 
 class TestJobShop:
     def test_JobShop1(self):

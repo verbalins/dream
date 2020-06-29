@@ -30,11 +30,11 @@ carries some global variables
 
 # from SimPy.Simulation import *
 
-import dream.simulation.Machine
+# import dream.simulation.Machine
 from .Queue import Queue
-from .Repairman import Repairman
+# from .Repairman import Repairman
 import xlwt
-import xlrd
+# import xlrd
 from random import Random  # , expovariate, gammavariate, normalvariate
 import simpy
 from six.moves import range
@@ -456,11 +456,10 @@ def getPhrase():
     return printKwrds
 
 
-def runSimulation(
-    objectList=[], maxSimTime=100, numberOfReplications=1, trace="No", seed=1
-):
+def runSimulation(objectList=[], maxSimTime=100, numberOfReplications=1, trace="No", seed=1, console="No"):
     G.numberOfReplications = numberOfReplications
     G.trace = trace
+    G.console = console
     G.maxSimTime = float(maxSimTime)
     G.seed = seed
 
