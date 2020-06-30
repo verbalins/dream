@@ -117,7 +117,8 @@ class Exit(CoreObject):
                 G.pendingEntities.remove(activeEntity)
         #         if activeEntity in G.EntityList:
         #             G.EntityList.remove(activeEntity)
-        #         self.clear(activeEntity)
+
+        self.clear(activeEntity)
         self.totalLifespan += (
             self.env.now - activeEntity.startTime
         )  # Add the entity's lifespan to the total one.

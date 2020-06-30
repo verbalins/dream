@@ -56,23 +56,13 @@ class EntityGenerator(object):
         while 1:
             # if the Source is empty create the Entity
             if len(self.victim.getActiveObjectQueue()) == 0:
-                entity = (
-                    self.victim.createEntity()
-                )  # create the Entity object and assign its name
-                entity.creationTime = (
-                    self.env.now
-                )  # assign the current simulation time as the Entity's creation time
-                entity.startTime = (
-                    self.env.now
-                )  # assign the current simulation time as the Entity's start time
-                entity.currentStation = (
-                    self.victim
-                )  # update the current station of the Entity
+                entity = self.victim.createEntity()  # create the Entity object and assign its name
+                entity.creationTime = self.env.now  # assign the current simulation time as the Entity's creation time
+                entity.startTime = self.env.now  # assign the current simulation time as the Entity's start time
+                entity.currentStation = self.victim  # update the current station of the Entity
                 G.EntityList.append(entity)
                 self.victim.outputTrace(entity.name, "generated")  # output the trace
-                self.victim.getActiveObjectQueue().append(
-                    entity
-                )  # append the entity to the resource
+                self.victim.getActiveObjectQueue().append(entity)  # append the entity to the resource
                 self.victim.numberOfArrivals += 1  # we have one new arrival
                 G.numberOfEntities += 1
                 self.victim.appendEntity(entity)
@@ -84,14 +74,16 @@ class EntityGenerator(object):
             else:
                 entityCounter = G.numberOfEntities + len(
                     self.victim.scheduledEntities
-                )  # this is used just ot output the trace correctly
+                )  # this is used just to output the trace correctly
                 self.victim.scheduledEntities.append(self.env.now)
                 self.victim.outputTrace(
                     self.victim.item.type + str(entityCounter), "generated"
                 )  # output the trace
-            yield self.env.timeout(
-                self.victim.calculateInterArrivalTime()
-            )  # wait until the next arrival
+            # If there's a target defined, is it reached?
+            if self.victim.numberToCreate > 0 and (self.victim.numberOfArrivals+len(self.victim.scheduledEntities)) >= self.victim.numberToCreate:
+                return
+
+            yield self.env.timeout(self.victim.calculateInterArrivalTime())  # wait until the next arrival
 
 
 # ============================================================================
@@ -112,8 +104,7 @@ class Source(CoreObject):
             and interArrivalTime["Normal"].get("max", None) is None
         ):
             interArrivalTime["Normal"]["max"] = (
-                interArrivalTime["Normal"]["mean"]
-                + 5 * interArrivalTime["Normal"]["stdev"]
+                interArrivalTime["Normal"]["mean"] + 5 * interArrivalTime["Normal"]["stdev"]
             )
 
         CoreObject.__init__(self, id, name)
@@ -123,16 +114,14 @@ class Source(CoreObject):
 
         self.type = "Source"  # String that shows the type of object
         self.rng = RandomNumberGenerator(self, interArrivalTime)
-        self.item = Globals.getClassFromName(
-            entity
-        )  # the type of object that the Source will generate
+        self.item = Globals.getClassFromName(entity)  # the type of object that the Source will generate
 
-        # New way of terminating the sunning of the simulation
+        # New way of terminating the running of the simulation
         self.numberToCreate = number
 
-        self.scheduledEntities = (
-            []
-        )  # list of creations that are scheduled. pattern is [timeOfCreation, EntityCounter]
+        # list of creations that are scheduled. pattern is [timeOfCreation, EntityCounter]
+        self.scheduledEntities = []
+
         from .Globals import G
 
         G.SourceList.append(self)
@@ -187,12 +176,6 @@ class Source(CoreObject):
             if self.entityCreated in receivedEvent:
                 transmitter, eventTime = self.entityCreated.value
                 self.entityCreated = self.env.event()
-                # Stop generating if we reached target.
-                if (
-                    self.numberToCreate > 0
-                    and self.numberOfArrivals > self.numberToCreate
-                ):
-                    return
             # otherwise, if the receiver requests availability then try to signal him if there is anything to dispose of
             if self.canDispose in receivedEvent:
                 transmitter, eventTime = self.canDispose.value
@@ -245,9 +228,7 @@ class Source(CoreObject):
     # =======================================================================
     def removeEntity(self, entity=None):
         if len(self.getActiveObjectQueue()) == 1 and len(self.scheduledEntities):
-            newEntity = (
-                self.createEntity()
-            )  # create the Entity object and assign its name
+            newEntity = self.createEntity()  # create the Entity object and assign its name
             newEntity.creationTime = self.scheduledEntities.pop(
                 0
             )  # assign the current simulation time as the Entity's creation time

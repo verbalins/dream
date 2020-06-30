@@ -29,7 +29,7 @@ In removeEntity, each time it falls below a specific level it creates new Entiti
 """
 
 from .Queue import Queue
-from six.moves import range
+# from six.moves import range
 
 
 # ===========================================================================
@@ -49,7 +49,7 @@ class NonStarvingEntry(Queue):
         number=0,
         **kw
     ):
-        Queue.__init__(self, id=id, name=name, capacity=capacity, number=number)
+        Queue.__init__(self, id=id, name=name, capacity=capacity)
         # the threshold under which a new Entity will be created
         self.threshold = int(threshold)
         # the number of Entities in the start of simulation
@@ -57,8 +57,13 @@ class NonStarvingEntry(Queue):
         # the data of the Entities (dictionary)
         self.entityData = dict(entityData)
 
+        self.numberToCreate = number
+        self.numberOfArrivals = 0  # Matches Source in naming
+
     # extend to create the initial WIP in the given level
     def initialize(self):
+        assert len(self.next) > 0, "Wrong routing for " + self.name + ": Successor not assigned."
+        assert len(self.previous) == 0, "Wrong routing for " + self.name + ": Predecessor should not be assigned."
         Queue.initialize(self)
 
         for i in range(self.initialWIPLevel):
@@ -95,7 +100,11 @@ class NonStarvingEntry(Queue):
         Eargs.update(extraArgs)
         E = entityType(**Eargs)
         Globals.setWIP([E])
+        self.numberOfArrivals += 1
         G.numberOfEntities += 1
         if not self.canDispose.triggered:
             if self.expectedSignals["canDispose"]:
                 self.sendSignal(receiver=self, signal=self.canDispose)
+
+    def defineRouting(self, successorList=[]):
+        self.next = successorList

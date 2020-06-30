@@ -30,9 +30,16 @@ def main(test=0):
     objectList = [Sp, M, EP]
     maxSimTime = 1440.0
 
-    runSimulation(objectList, maxSimTime)
+    runSimulation(objectList, maxSimTime, console="Yes", trace="Yes")
 
     if test:
         return {"parts": EP.numOfExits}
 
     print("The system produced", EP.numOfExits, "parts.")
+    from dream.simulation.Globals import G
+    from pathlib import Path
+    G.traceFile.save(str(Path.home()) + "/trace.xls")
+
+
+if __name__ == "__main__":
+    main()
