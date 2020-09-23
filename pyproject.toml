@@ -19,11 +19,12 @@ xlrd = "^1.2.0"
 "zope.dottedname" = "^4.3"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.4.3"
+pytest = "^6.0.1"
 Black = "^19.10b0"
 Flake8 = "^3.8.2"
 mypy = "^0.780"
 rope = "^0.17.0"
+pytest-xdist = "^2.1.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

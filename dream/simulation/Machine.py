@@ -48,7 +48,7 @@ import six
 # ===========================================================================
 class Machine(CoreObject):
     family='Server'
-    
+
     # =======================================================================
     # initialise the id the capacity, of the resource and the distribution
     # =======================================================================
@@ -64,99 +64,98 @@ class Machine(CoreObject):
         CoreObject.__init__(self, id, name)
         from .Globals import G
 
-        processingTime=self.getOperationTime(time=processingTime)
+        processingTime = self.getOperationTime(time=processingTime)
 
-        setupTime=self.getOperationTime(time=setupTime)
+        setupTime = self.getOperationTime(time=setupTime)
 
-        loadTime=self.getOperationTime(time=loadTime)
-        
-        #     holds the capacity of the machine 
-        self.capacity=capacity
-        #     sets the repairman resource of the Machine
-        self.repairman=repairman
-        #     Sets the attributes of the processing (and failure) time(s)
-        self.rng=RandomNumberGenerator(self, processingTime)
+        loadTime = self.getOperationTime(time=loadTime)
+
+        # holds the capacity of the machine
+        self.capacity = capacity
+        # sets the repairman resource of the Machine
+        self.repairman = repairman
+        # Sets the attributes of the processing (and failure) time(s)
+        self.rng = RandomNumberGenerator(self, processingTime)
         # check whether the operators are provided with a skills set
-        # check whether the operators are provided with a skills set
-        self.dedicatedOperator=self.checkForDedicatedOperators()
-        if operatorPool and not (operatorPool=='None'):
-            self.operatorPool=operatorPool
+        self.dedicatedOperator = self.checkForDedicatedOperators()
+        if operatorPool and not (operatorPool == 'None'):
+            self.operatorPool = operatorPool
         else:
-            if len(G.OperatorPoolsList)>0:
+            if len(G.OperatorPoolsList) > 0:
                 for operatorPool in G.OperatorPoolsList:                    # find the operatorPool assigned to the machine
                     if(self.id in operatorPool.coreObjectIds):                   # and add it to the machine's operatorPool
-                        machineOperatorPoolList=operatorPool                # there must only one operator pool assigned to the machine,
+                        machineOperatorPoolList = operatorPool                # there must only one operator pool assigned to the machine,
                                                                             # otherwise only one of them will be taken into account
                     else:
-                        machineOperatorPoolList=[]                          # if there is no operatorPool assigned to the machine
+                        machineOperatorPoolList = []                          # if there is no operatorPool assigned to the machine
             else:                                                           # then machineOperatorPoolList/operatorPool is a list
-                machineOperatorPoolList=[]                                  # if there are no operatorsPool created then the 
+                machineOperatorPoolList = []                                  # if there are no operatorsPool created then the 
                                                                             # then machineOperatorPoolList/operatorPool is a list
             if (type(machineOperatorPoolList) is list):                 # if the machineOperatorPoolList is a list
                                                                         # find the operators assigned to it and add them to the list
                 for operator in G.OperatorsList:                        # check which operator in the G.OperatorsList
                     if(self.id in operator.coreObjectIds):                   # (if any) is assigned to operate
                         machineOperatorPoolList.append(operator)        # the machine with ID equal to id
-            
-            self.operatorPool=machineOperatorPoolList
-        
-        self.dedicatedOperator=self.checkForDedicatedOperators()
+
+            self.operatorPool = machineOperatorPoolList
+
+        self.dedicatedOperator = self.checkForDedicatedOperators()
         # create an operatorPool if needed
         self.createOperatorPool(self.operatorPool)
         # holds the Operator currently processing the Machine
-        self.currentOperator=None
+        self.currentOperator = None
         # define if load/setup/removal/processing are performed by the operator 
-        self.operationType=operationType
+        self.operationType = operationType
         # boolean to check whether the machine is being operated
         self.toBeOperated = False
         # define the load times
         self.loadRng = RandomNumberGenerator(self, loadTime)
         # XX variable that informs on the need for setup
-        self.setUp=True
+        self.setUp = True
         # define the setup times
         self.stpRng = RandomNumberGenerator(self, setupTime)
         # examine if there are multiple operation types performed by the operator
         #     there can be Setup/Processing operationType
         #     or the combination of both (MT-Load-Setup-Processing) 
-        self.multOperationTypeList=[]   
+        self.multOperationTypeList = []
         if isinstance(self.operationType, six.string_types) and self.operationType.startswith("MT"):
             OTlist = operationType.split('-')
-            self.operationType=OTlist.pop(0)
+            self.operationType = OTlist.pop(0)
             self.multOperationTypeList = OTlist
         else:
             self.multOperationTypeList.append(self.operationType)
         # technology is used to group machines that perform the same operation when needed
-        self.technology=technology
+        self.technology = technology
 
         # flags used for preemption purposes
-        self.isPreemptive=False
-        self.resetOnPreemption=False
-        if len(preemption)>0:
-            self.isPreemptive=bool(int(preemption.get('isPreemptive') or 0))
-            self.resetOnPreemption=bool(int(preemption.get('resetOnPreemption', 0)))
+        self.isPreemptive = False
+        self.resetOnPreemption = False
+        if len(preemption) > 0:
+            self.isPreemptive = bool(int(preemption.get('isPreemptive') or 0))
+            self.resetOnPreemption = bool(int(preemption.get('resetOnPreemption', 0)))
         # flag notifying that there is operator assigned to the actievObject
-        self.assignedOperator=True
+        self.assignedOperator = True
         # flag notifying the the station can deliver entities that ended their processing while interrupted
-        self.canDeliverOnInterruption=canDeliverOnInterruption
-        self.repairman='None'
+        self.canDeliverOnInterruption = canDeliverOnInterruption
+        self.repairman = 'None'
         for repairman in G.RepairmanList:                   # check which repairman in the G.RepairmanList
             if(self.id in repairman.coreObjectIds):              # (if any) is assigned to repair 
-                self.repairman=repairman                                 # the machine with ID equal to id
+                self.repairman = repairman                                 # the machine with ID equal to id
         G.MachineList.append(self)                             # add machine to global MachineList
-        if self.operatorPool!="None":
+        if self.operatorPool != "None":
             G.OperatedMachineList.append(self)                 # add the machine to the operatedMachines List
         # attribute to prioritize against competing parallel machines
         self.priority=priority
-   
+
     # =======================================================================
     # initialize the machine
     # =======================================================================        
     def initialize(self):
         # using the Process __init__ and not the CoreObject __init__
         CoreObject.initialize(self)
-        
-        # initialize the internal Queue (type Resource) of the Machine 
-        self.Res=simpy.Resource(self.env, capacity=1)
+
+        # initialize the internal Queue (type Resource) of the Machine
+        self.Res = simpy.Resource(self.env, capacity=self.capacity)
         # initiate the Broker and the router
         self.createBroker()
         self.createRouter()
@@ -166,24 +165,24 @@ class Machine(CoreObject):
         self.initializeBroker()
         # initialise the router if not initialized already
         self.initializeRouter()
-        
+
         # variables used for interruptions
-        self.isProcessing=False
+        self.isProcessing = False
         # variable that shows what kind of operation is the station performing at the moment
         '''
-            it can be Processing or Setup 
+            it can be Processing or Setup
             XXX: others not yet implemented
         '''
-        self.currentlyPerforming=None
-        self.tinM=0
-        self.timeLastProcessingStarted=0
-        self.timeLastOperationStarted=-1
-        self.interruption=False
-        self.breakTime=0
+        self.currentlyPerforming = None
+        self.tinM = 0
+        self.timeLastProcessingStarted = 0
+        self.timeLastOperationStarted = -1
+        self.interruption = False
+        self.breakTime = 0
         # flag notifying that there is operator assigned to the actievObject
-        self.assignedOperator=True
-        
-        self.brokerIsSet=self.env.event()
+        self.assignedOperator = True
+
+        self.brokerIsSet = self.env.event()
         # this event is generated every time an operator is requested by machine for Load operation type.
         #     if the machine has not succeeded in getting an entity due to the resource absence 
         #     and waits for the next event to get the entity, 
@@ -209,12 +208,13 @@ class Machine(CoreObject):
         # XXX update time to comply with old definition
         '''returns the dictionary updated'''
         if not time:
-            time = {'Fixed':{'mean': 0 }}
-        if 'Normal' in list(time.keys()) and\
+            time = {'Fixed': {'mean': 0}}
+        if 'Normal' in time and\
                 time['Normal'].get('max', None) is None:
             time['Normal']['max'] = float(time['Normal']['mean']) + 5 * float(time['Normal']['stdev'])
+
         return time
-    
+
     #===========================================================================
     # create an operatorPool if needed
     #===========================================================================
@@ -283,11 +283,11 @@ class Machine(CoreObject):
     #===========================================================================
     def initializeOperatorPool(self):
         # initialise the operator pool if any
-        if (self.operatorPool!="None"):
+        if (self.operatorPool != "None"):
             self.operatorPool.initialize()
             # if the flag dedicatedOperator is true then reset/empty the operators list of the pool
             if self.dedicatedOperator:
-                self.operatorPool.operators=[]
+                self.operatorPool.operators = []
             # otherwise update the coreObjectIds/coreObjects list of the operators
             else:
                 for operator in self.operatorPool.operators:
@@ -314,13 +314,13 @@ class Machine(CoreObject):
             if not self.router.isActivated:
                 self.env.process(self.router.run())
                 self.router.isActivated=True
-                
+
     #===========================================================================
     # get the initial operationTypes (setup/processing) : manual or automatic
     #===========================================================================
     def checkInitialOperationTypes(self):
         pass
-        
+
     #===========================================================================
     # get the initial operation times (setup/processing); 
     # XXX initialy only setup time is calculated here
@@ -356,7 +356,7 @@ class Machine(CoreObject):
                     operation, func = opTup
                     required = required or (any(type==str(operation) for type in self.multOperationTypeList))
             else:
-                required=True
+                required = True
             notRequired = False
             # operations that should NOT be in the multOperationTypeList
             if operationsNotRequired:
@@ -1055,14 +1055,14 @@ class Machine(CoreObject):
                                                 or any(type=='Setup' for type in self.multOperationTypeList))):
             return self.operatorPool.checkIfResourceIsAvailable()\
                 and self.checkIfMachineIsUp()\
-                and len(activeObjectQueue)<self.capacity\
+                and len(activeObjectQueue) < self.capacity\
                 and self.isInRouteOf(thecaller)\
                 and not self.entryIsAssignedTo()
         else:
             # the operator doesn't have to be present for the loading of the machine as the load operation
             # is not assigned to operators
             return self.checkIfMachineIsUp()\
-                and len(activeObjectQueue)<self.capacity\
+                and len(activeObjectQueue) < self.capacity\
                 and self.isInRouteOf(thecaller)\
                 and not self.entryIsAssignedTo()
     
@@ -1081,7 +1081,7 @@ class Machine(CoreObject):
         if (self.operatorPool!='None' and (any(type=='Load' for type in self.multOperationTypeList))):
             if giverObject.haveToDispose(self):
                 if self.checkOperator()\
-                    and self.checkIfActive() and len(activeObjectQueue)<self.capacity:
+                    and self.checkIfActive() and len(activeObjectQueue) < self.capacity:
                     # if the exit of the object is already assigned somewhere else, return false
                     if giverObject.exitIsAssignedTo() and giverObject.exitIsAssignedTo()!=self:
                         return False
@@ -1092,7 +1092,7 @@ class Machine(CoreObject):
             # the operator performs no load and the entity is received by the machine while there is 
             # no need for operators presence. The operator needs to be present only where the load Type 
             # operation is assigned
-            if self.checkIfActive() and len(activeObjectQueue)<self.capacity\
+            if self.checkIfActive() and len(activeObjectQueue) < self.capacity\
                     and giverObject.haveToDispose(self):
                 # if the exit of the object is already assigned somewhere else, return false
                 if giverObject.exitIsAssignedTo() and giverObject.exitIsAssignedTo()!=self:

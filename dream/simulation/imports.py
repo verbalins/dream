@@ -97,3 +97,6 @@ from dream.simulation.applications.CapacityStations.CapacityStation import Capac
 from dream.simulation.applications.CapacityStations.CapacityStationExit import CapacityStationExit
 from dream.simulation.applications.CapacityStations.CapacityStationController import CapacityStationController
 
+# Extensions
+from dream.simulation.ParallelMachine import ParallelMachine
+from dream.simulation.ProductionLine import ProductionLine

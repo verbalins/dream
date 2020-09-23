@@ -52,7 +52,7 @@ class Queue(CoreObject):
         **kw
     ):
         self.type = "Queue"  # String that shows the type of object
-        CoreObject.__init__(self, id, name)
+        super().__init__(id, name)
         capacity = float(capacity)
         if capacity < 0 or capacity == float("inf"):
             self.capacity = float("inf")
@@ -131,8 +131,7 @@ class Queue(CoreObject):
     # run method of the queue
     # ===========================================================================
     def run(self):
-
-        activeObjectQueue = self.Res.users
+        activeObjectQueue = self.getActiveObjectQueue()
         # check if there is WIP and signal receiver
         self.initialSignalReceiver()
         while 1:
@@ -198,7 +197,7 @@ class Queue(CoreObject):
     #              this is kind of slow I think got to check
     # =======================================================================
     def haveToDispose(self, callerObject=None):
-        activeObjectQueue = self.Res.users
+        activeObjectQueue = self.getActiveObjectQueue()
         # if we have only one possible receiver just check if the Queue holds one or more entities
         if callerObject is None:
             return len(activeObjectQueue) > 0

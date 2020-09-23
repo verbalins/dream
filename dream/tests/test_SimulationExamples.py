@@ -1,6 +1,3 @@
-# import pytest
-
-
 class TestSimulations:
     def test_SingleServer(self):
         from dream.simulation.Examples.SingleServer import main
@@ -185,11 +182,18 @@ class TestSimulations:
         assert 80 < result["parts"] < 1000
 
     def test_Aggregation(self):
-        from dream.simulation.Examples.Aggregation import main
+        from dream.simulation.Examples.AggregationConcept import main
 
         result = main(test=1)
         assert result["frames"] == 30  # 30 created frames
-        assert result["parts"] > 0
+        assert result["parts"] > 700
+
+    def test_FactoryAggreation(self):
+        from dream.simulation.Examples.FactoryAggregation import main
+
+        result = main(test=1)
+        assert result["frames"] == 50
+        assert result["parts"] > 50
 
 
 class TestJobShop:

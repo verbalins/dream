@@ -134,6 +134,11 @@ class G:
 
     totalPulpTime = 0  # temporary to track how much time PuLP needs to run
 
+from enum import Enum
+class Distributions(Enum):
+    Fixed = "Fixed"
+    Triangular = "Triangular"
+    Normal = "Normal"
 
 # =======================================================================
 # method to move entities exceeding a certain safety stock
@@ -416,6 +421,8 @@ def getSupportedPrintKwrds():
         "conveyerEnd",
         "conveyerFull",
         "moveEnd",
+        "sourceStopped",
+        "debug",
     )
 
 
@@ -452,6 +459,8 @@ def getPhrase():
         "moveEnd": {"phrase": "received a moveEnd event"},
         "conveyerEnd": {"phrase": "has reached conveyer End", "suffix": ".!"},
         "conveyerFull": {"phrase": "is now Full, No of units:", "suffix": "(*)"},
+        "sourceStopped": {"phrase": "has now stopped producing units."},
+        "debug": {"prefix": "!", "phrase": "DEBUG MESSAGE", "suffix": "!"}
     }
     return printKwrds
 
@@ -466,10 +475,7 @@ def runSimulation(objectList=[], maxSimTime=100, numberOfReplications=1, trace="
     G.ObjList = []
     G.ObjectInterruptionList = []
     G.ObjectResourceList = []
-    # from .CoreObject import CoreObject
-    # from .ObjectInterruption import ObjectInterruption
-    # from .ObjectResource import ObjectResource
-    # from .Entity import Entity
+
     from .CoreObject import CoreObject
     from .ObjectInterruption import ObjectInterruption
     from .ObjectResource import ObjectResource
@@ -477,6 +483,9 @@ def runSimulation(objectList=[], maxSimTime=100, numberOfReplications=1, trace="
 
     for object in objectList:
         if issubclass(object.__class__, CoreObject):
+            if object.type == "ProductionLine":
+                G.ObjList.extend(object.objectList)
+                G.ObjectInterruptionList.extend(object.interruptionList)
             G.ObjList.append(object)
         elif issubclass(object.__class__, ObjectInterruption):
             G.ObjectInterruptionList.append(object)

@@ -40,7 +40,7 @@ class CoreObject(ManPyObject):
     class_name = "Dream.CoreObject"
 
     def __init__(self, id, name, **kw):
-        ManPyObject.__init__(self, id, name)
+        super().__init__(id, name)
         self.objName = name
         #     lists that hold the previous and next objects in the flow
         self.next = []  # list with the next objects in the flow
@@ -68,6 +68,7 @@ class CoreObject(ManPyObject):
         self.resetOnPreemption = False
         self.interruptCause = None
         self.gatherWipStat = False
+        self.dedicatedOperator = False
         # flag used to signal that the station waits for removeEntity event
         self.waitEntityRemoval = False
         # attributes/indices used for printing the route, hold the cols corresponding to the object (entities route and operators route)
@@ -280,6 +281,8 @@ class CoreObject(ManPyObject):
         # lists that keep the start/endShiftTimes of the victim
         self.endShiftTimes = []
         self.startShiftTimes = []
+        self.numEntries = 0
+        self.numExits = 0
 
     # =======================================================================
     #                the main process of the core object
@@ -333,7 +336,7 @@ class CoreObject(ManPyObject):
             self.isBlocked = False
             self.isProcessing = False
 
-        activeObjectQueue = self.Res.users
+        activeObjectQueue = self.getActiveObjectQueue()
         activeObjectQueue.remove(entity)  # remove the Entity from the queue
         if self.receiver:
             self.receiver.appendEntity(entity)
@@ -349,7 +352,7 @@ class CoreObject(ManPyObject):
         # he entity enters a new object
         if entity.schedule:
             entity.schedule[-1]["exitTime"] = self.env.now
-
+        self.numExits += 1
         # update wipStatList
         if self.gatherWipStat:
             import numpy
@@ -397,7 +400,7 @@ class CoreObject(ManPyObject):
         # get active object and its queue, as well as the active (to be) entity
         # (after the sorting of the entities in the queue of the giver object)
         #         activeObject=self.getActiveObject()
-        activeObjectQueue = self.Res.users
+        activeObjectQueue = self.getActiveObjectQueue()
         # get giver object, its queue, and sort the entities according to this object priorities
         giverObject = self.giver
         giverObject.sortEntities()  # sort the Entities of the giver
@@ -454,6 +457,7 @@ class CoreObject(ManPyObject):
         #                         self.sendSignal(receiver=entity.currentStation, signal=entity.currentStation.canDispose)
 
         # update wipStatList
+        self.numEntries += 1
         if self.gatherWipStat:
             import numpy
 
@@ -506,9 +510,9 @@ class CoreObject(ManPyObject):
 
                     # TODO: implement preemption for simple machines
                     if (
-                        receiver.operatorPool
-                        and isinstance(receiver, MachineJobShop)
-                        or isinstance(receiver, MachineManagedJob)
+                        receiver.operatorPool and
+                        isinstance(receiver, MachineJobShop) or
+                        isinstance(receiver, MachineManagedJob)
                     ):
                         # and the operationType list contains Load, the receiver is operated
                         if (receiver.operatorPool != "None") and any(
@@ -638,15 +642,9 @@ class CoreObject(ManPyObject):
     @staticmethod
     def findGiversFor(activeObject):
         givers = []
-        for object in [
-            x
-            for x in activeObject.previous
-            if (x is not activeObject)
-            and not x.canDispose.triggered
-            and (
-                x.expectedSignals["canDispose"]
-                or (x.canDeliverOnInterruption and x.timeLastShiftEnded == x.env.now)
-            )
+        for object in [x for x in activeObject.previous
+        if (x is not activeObject) and not x.canDispose.triggered
+            and (x.expectedSignals["canDispose"] or (x.canDeliverOnInterruption and x.timeLastShiftEnded == x.env.now))
         ]:  # extra check.If shift ended right now and the object
             # can unload we relax the canDispose flag
             if object.haveToDispose(activeObject):
@@ -835,8 +833,7 @@ class CoreObject(ManPyObject):
     # checks if the Object can dispose an entity to the following object
     # =======================================================================
     def haveToDispose(self, callerObject=None):
-        activeObjectQueue = self.Res.users
-        return len(activeObjectQueue) > 0
+        return len(self.getActiveObjectQueue()) > 0
 
     # =======================================================================
     #    checks if the Object can accept an entity and there is an entity
@@ -893,7 +890,7 @@ class CoreObject(ManPyObject):
     # get the giver object queue in a getEntity transaction.
     # =======================================================================
     def getGiverObjectQueue(self):
-        return self.giver.Res.users
+        return self.giver.getActiveObjectQueue()
 
     # =======================================================================
     # get the receiver object in a removeEntity transaction.
@@ -905,7 +902,7 @@ class CoreObject(ManPyObject):
     # get the receiver object queue in a removeEntity transaction.
     # =======================================================================
     def getReceiverObjectQueue(self):
-        return self.receiver.Res.users
+        return self.receiver.getActiveObjectQueue()
 
     # =======================================================================
     # calculates the processing time

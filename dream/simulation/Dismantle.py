@@ -137,7 +137,7 @@ class Dismantle(CoreObject):
             0  # holds the last time that an entity ended processing in the object
         )
         self.timeLastEntityEntered = (
-            0  # holds the last time that an entity ended processing in the object
+            0  # holds the last time that an entity entered the object
         )
         self.timeLastFrameWasFull = 0  # holds the time that the last frame was full, ie that assembly process started
         self.nameLastFrameWasFull = ""  # holds the name of the last frame that was full, ie that assembly process started
@@ -151,6 +151,8 @@ class Dismantle(CoreObject):
         self.Res.users = []
 
     #         self.Res.waitQ=[]
+        assert len(self.nextPart) > 0, "Define part routing for " + self.name
+        assert len(self.nextFrame) > 0, "Define frame routing for " + self.name
 
     # ===========================================================================
     # the run method
@@ -173,6 +175,7 @@ class Dismantle(CoreObject):
                 self.timeLastEntityEntered = self.env.now
                 startWorkingTime = self.env.now
                 self.isProcessing = True
+                self.timeLastProcessingStarted = self.env.now
                 self.totalProcessingTimeInCurrentEntity = self.calculateProcessingTime()
                 # hold for the time the assembly operation is carried
                 yield self.env.timeout(self.totalProcessingTimeInCurrentEntity)
@@ -210,6 +213,7 @@ class Dismantle(CoreObject):
                     self.entityRemoved = self.env.event()
 
                     if self.frameIsEmpty() and not self.waitToDisposeFrame:
+                        # Make sure to reset the Res.users of the frame.
                         self.waitToDisposePart = False
                         self.waitToDisposeFrame = True
                     # if the internal queue is empty then update the corresponding flags and proceed with getting a new entity
@@ -241,6 +245,13 @@ class Dismantle(CoreObject):
             return len(self.getActiveObjectQueue()) == 0
         # otherrwise check additionally if the caller is in the previous list
         return len(self.getActiveObjectQueue()) == 0 and (callerObject in self.previous)
+
+    # ===========================================================================
+    # Extends the defineRouting from CoreObject to also optionally include the PartFrameRouting
+    # ===========================================================================
+    def defineRouting(self, predecessorList=[], successorList=[], definePartFrameRouting=[[], []]):
+        CoreObject.defineRouting(self, predecessorList=predecessorList, successorList=successorList)
+        self.definePartFrameRouting(successorPartList=definePartFrameRouting[0], successorFrameList=definePartFrameRouting[1])
 
     # ===========================================================================
     # defines where parts and frames go after they leave the object
@@ -312,7 +323,7 @@ class Dismantle(CoreObject):
         for part in activeEntity.getFrameQueue():
             activeObjectQueue.append(part)
             part.currentStation = self
-        activeEntity.getFrameQueue = []  # empty the frame
+        activeEntity.Res.users = []  # empty the frame
 
         # move the frame to the end of the internal queue since we want the frame to be disposed first
         activeObjectQueue.append(activeEntity)

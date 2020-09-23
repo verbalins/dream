@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from __future__ import print_function
-from dream.simulation.imports import Source, Queue, Machine, Exit  
+from dream.simulation.imports import Source, Queue, Machine, Exit
 from dream.simulation.Globals import runSimulation
 
 #define the objects of the model 

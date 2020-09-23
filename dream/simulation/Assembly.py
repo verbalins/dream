@@ -155,7 +155,7 @@ class Assembly(CoreObject):
             0  # holds the last time that an entity ended processing in the object
         )
         self.timeLastEntityEntered = (
-            0  # holds the last time that an entity ended processing in the object
+            0  # holds the last time that an entity entered the object
         )
         self.timeLastFrameWasFull = 0  # holds the time that the last frame was full, ie that assembly process started
         self.nameLastFrameWasFull = ""  # holds the name of the last frame that was full, ie that assembly process started
@@ -342,7 +342,8 @@ class Assembly(CoreObject):
 
         # if it holds already a frame then return true only
         # for parts and if the frame has still space
-        if len(activeObjectQueue[0].getFrameQueue()) < activeObjectQueue[0].capacity:
+        test = activeObjectQueue[0].Res.users
+        if len(test) < activeObjectQueue[0].capacity:
             callerQueue = callerObject.getActiveObjectQueue()[0]
             if callerQueue.type == "Part":
                 return not activeObject.entryIsAssignedTo()
@@ -430,7 +431,7 @@ class Assembly(CoreObject):
         activeEntity.currentStation = self
 
         # if the frame is not fully loaded then signal a giver
-        if len(activeObjectQueue[0].getFrameQueue()) < activeObjectQueue[0].capacity:
+        if len(activeObjectQueue[0].Res.users) < activeObjectQueue[0].capacity:
             self.printTrace(self.id, attemptSignalGiver="(getEntity)")
             self.signalGiver()
         return activeEntity
@@ -444,7 +445,7 @@ class Assembly(CoreObject):
         activeObjectQueue = self.getActiveObjectQueue()
         assert entity, "the entity to be appended cannot be None"
         if entity.type == "Part":
-            activeObjectQueue[0].getFrameQueue().append(
+            activeObjectQueue[0].Res.users.append(
                 entity
             )  # get the part from the giver and append it to the frame!
         elif entity.type == "Frame":
